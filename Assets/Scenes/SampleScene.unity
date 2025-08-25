@@ -542,13 +542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba549886fe818e94da51cc7ef274e511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  playerCamera: {fileID: 330585545}
-  walkSpeed: 6
-  runSpeed: 12
-  jumpPower: 7
-  gravity: 10
-  lookSpeed: 2
-  lookXLimit: 45
+  moveSpeed: 5
 --- !u!143 &792710514
 CharacterController:
   m_ObjectHideFlags: 0
