@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            Debug.Log("Took a hit");
             health -= dmgAmt;
             healthBar.width -= (100 - dmgAmt) * healthBar.width / 100;
         }
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            Debug.Log("Move. Why are you sitting there taking damage?");
             health -= dmgAmt;
             healthBar.width -= (100 - dmgAmt) * healthBar.width / 100;
         }
