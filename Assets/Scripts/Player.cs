@@ -14,10 +14,12 @@ public class Player : MonoBehaviour
     void Start()
     {
         gameManager.failScreen.enabled = false;
+        Debug.Log("Game Started");
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Collision Detected");
         if (collision.gameObject.CompareTag("Enemy") && health > 0)
         {
             health -= dmgAmt;
