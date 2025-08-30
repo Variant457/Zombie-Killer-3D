@@ -9,6 +9,12 @@ public class GameManager : MonoBehaviour
 
     public Canvas failScreen;
     public Transform playerTransform;
+    private int points;
+
+    void Start()
+    {
+        points = 0;
+    }
 
     public void GameOver()
     {
@@ -42,5 +48,10 @@ public class GameManager : MonoBehaviour
         player.ResetHealth();
         failScreen.enabled = false;
         healthScreen.enabled = true;
+    }
+
+    public void AddPoints()
+    {
+        points += 100;
     }
 }

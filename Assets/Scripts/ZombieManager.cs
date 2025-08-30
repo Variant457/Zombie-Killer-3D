@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public class ZombieMovement : MonoBehaviour
+public class ZombieManager : MonoBehaviour
 {
+    public float health = 50f;
     public float zombieSpeed = 5f;
     private Transform playerTransform;
+    private GameManager gameManager;
 
     void Start()
     {
@@ -15,5 +17,13 @@ public class ZombieMovement : MonoBehaviour
     {
         Vector3 direction = (playerTransform.position - transform.position).normalized;
         transform.position += direction * zombieSpeed * Time.deltaTime;
+
+        if (Time.timeScale != 0) zombieSpeed += 0.0004f;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+            gameManager.AddPoints();
+        }
     }
 }

@@ -1195,9 +1195,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ZombieSpawner
   zombie: {fileID: 3275137155765079590, guid: a605e636c2a4c6741aac6f13c2efc5bc, type: 3}
   playerTransform: {fileID: 1621718249}
-  maxSpawnRad: 100
-  minSpawnRad: 30
-  spawnInterval: 2
+  maxSpawnRad: 80
+  minSpawnRad: 40
+  initSpawnInterval: 3
 --- !u!4 &1568709118
 Transform:
   m_ObjectHideFlags: 0

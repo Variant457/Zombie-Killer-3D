@@ -7,11 +7,20 @@ public class ZombieSpawner : MonoBehaviour
     public Transform playerTransform;
     public float maxSpawnRad = 50f;
     public float minSpawnRad = 10f;
-    public float spawnInterval = 0.2f;
+    public float initSpawnInterval = 3f;
 
     void Start()
     {
         StartCoroutine(SpawnZombieRoutine());
+    }
+
+    void Update()
+    {
+        if (Time.timeScale != 0)
+        {
+            if (initSpawnInterval >= 0) initSpawnInterval -= 0.00005f;
+        }
+        else initSpawnInterval = 3f;
     }
 
     IEnumerator SpawnZombieRoutine() {
@@ -21,9 +30,9 @@ public class ZombieSpawner : MonoBehaviour
             {
                 Vector2 randomDir = Random.insideUnitCircle.normalized;
                 float randomDist = Random.Range(minSpawnRad, maxSpawnRad);
-                Vector3 spawnPos = playerTransform.position + new Vector3(randomDir.x, 20, randomDir.y) * randomDist;
+                Vector3 spawnPos = playerTransform.position + new Vector3(randomDir.x, 1, randomDir.y) * randomDist;
                 Instantiate(zombie, spawnPos, Quaternion.identity);
-                yield return new WaitForSeconds(spawnInterval);
+                yield return new WaitForSeconds(initSpawnInterval);
             }
         }
     }
