@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
     public static float maxHealth = 100;
-    public int dmgAmt = 5;         // Replace with Zombie Object
+    public int dmgAmt = 5;
     private float health = maxHealth;
 
     [SerializeField]
@@ -30,6 +30,12 @@ public class Player : MonoBehaviour
                 gameManager.GameOver();
             }
         }
+    }
+
+    public void ResetHealth()
+    {
+        health = maxHealth;
+        healthBar.UpdateHealthBar(health, maxHealth);
     }
 
     // Update is called once per frame
