@@ -3,12 +3,13 @@ using UnityEngine;
 public class ZombieManager : MonoBehaviour
 {
     public float health = 50f;
-    public float zombieSpeed = 5f;
+    public float zombieSpeed = 3f;
     private Transform playerTransform;
-    private GameManager gameManager;
+    private float maxHealth;
 
     void Start()
     {
+        maxHealth = health;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         playerTransform = player.transform;
     }
@@ -18,12 +19,18 @@ public class ZombieManager : MonoBehaviour
         Vector3 direction = (playerTransform.position - transform.position).normalized;
         transform.position += direction * zombieSpeed * Time.deltaTime;
 
-        if (Time.timeScale != 0) zombieSpeed += 0.0004f;
+        if (Time.timeScale != 0) zombieSpeed += 0.0003f;
 
         if (health <= 0)
         {
             Destroy(gameObject);
-            gameManager.AddPoints();
+            FindAnyObjectByType<GameManager>().AddPoints();
         }
+    }
+
+    public void TakeDmg(float amt)
+    {
+        health -= amt;
+        GetComponent<ZombieHealthUI>().UpdateHealthUI(health, maxHealth);
     }
 }

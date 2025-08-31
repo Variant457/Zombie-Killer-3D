@@ -303,6 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e009978758f5684c8fc7689676aef3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZombieHealthUI
+  healthSlider: {fileID: 8454369053037268306}
 --- !u!1 &4419620246646687739
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +482,7 @@ GameObject:
   - component: {fileID: 5055793717063874571}
   m_Layer: 7
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -592,7 +593,7 @@ GameObject:
   - component: {fileID: 2863081431197939367}
   m_Layer: 7
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -19,7 +19,7 @@ public class GunSystem : MonoBehaviour
 
     //Reference
     public Camera fpsCam;
-    public Transform attackPoint;
+    public Transform muzzlePoint;
     public RaycastHit rayHit;
     public LayerMask whatIsEnemy;
     public AudioClip Audioclip;
@@ -28,7 +28,6 @@ public class GunSystem : MonoBehaviour
     //Graphics
     public GameObject muzzleFlash;
     public TextMeshProUGUI text;
-
 
     private void Awake()
     {
@@ -76,15 +75,16 @@ public class GunSystem : MonoBehaviour
         //RayCast
         if (Physics.Raycast(fpsCam.transform.position, direction, out rayHit, range, whatIsEnemy))
         {
-            Debug.Log(rayHit.collider.name);
-
+            //Debug.Log(rayHit.collider.name);
 
             if (rayHit.collider.CompareTag("Enemy"))
-                rayHit.collider.GetComponent<ShootingAi>().TakeDamage(damage);
+            {
+                rayHit.collider.GetComponentInParent<ZombieManager>().TakeDmg(damage);
+            }
         }
 
         //Graphics
-        Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+        Instantiate(muzzleFlash, muzzlePoint.position, Quaternion.identity);
 
         audioSource.clip = Audioclip;
         audioSource.Play();

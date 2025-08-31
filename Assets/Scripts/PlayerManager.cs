@@ -19,12 +19,10 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision Detected");
         if (collision.gameObject.CompareTag("Enemy") && health > 0)
         {
             health -= dmgAmt;
             healthBar.UpdateHealthBar(health, maxHealth);
-            Debug.Log("Took a hit. Health - " + health);
             if (health <= 0)
             {
                 gameManager.GameOver();
@@ -43,7 +41,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (health > 0 && health < maxHealth)
         {
-            health += 0.001f;
+            health += 0.005f;
             healthBar.UpdateHealthBar(health, maxHealth);
         }
     }

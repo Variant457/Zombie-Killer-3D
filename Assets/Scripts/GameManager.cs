@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public Canvas failScreen;
     public Transform playerTransform;
+    public TextMeshProUGUI pointText;
+    public TextMeshProUGUI scoreText;
     private int points;
 
     void Start()
@@ -19,6 +22,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         healthScreen.enabled = false;
+        scoreText.SetText("Your Score: " + points.ToString());
         failScreen.enabled = true;
         Time.timeScale = 0f;
 
@@ -46,12 +50,15 @@ public class GameManager : MonoBehaviour
 
         //Resets Screens
         player.ResetHealth();
+        points = 0;
         failScreen.enabled = false;
+        pointText.SetText(points.ToString());
         healthScreen.enabled = true;
     }
 
     public void AddPoints()
     {
         points += 100;
+        pointText.SetText(points.ToString());
     }
 }
