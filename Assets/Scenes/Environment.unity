@@ -2592,7 +2592,6 @@ MonoBehaviour:
   - GameManager.GameOver
   - GameManager.OnClick
   - GameManager.AddPoints
-  - GunSystem.Awake
   - GunSystem.Update
   - GunSystem.MyInput
   - GunSystem.Shoot
