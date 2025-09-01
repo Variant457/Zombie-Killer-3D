@@ -4,17 +4,20 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using Unity.Profiling;
-using Unity.VisualScripting.Dependencies.NCalc;
 
 public class ProfilerDataExporter : MonoBehaviour
 {
     private StringBuilder csvContent;
     private List<string> headerColumns;
 
+    //CPU Specific
+    private ProfilerRecorder mainThreadTimeRecorder;
+
     // Memory Specific
     private ProfilerRecorder systemMemoryRecorder;
     private ProfilerRecorder gcMemoryRecorder;
-    private ProfilerRecorder mainThreadTimeRecorder;
+    private ProfilerRecorder gcAllocRecorder;
+
     private float statsRecordInterval = 1.0f;
     private float timeSinceLastRecord = 0f;
 
@@ -52,15 +55,21 @@ public class ProfilerDataExporter : MonoBehaviour
         csvContent = new StringBuilder();
         headerColumns = new List<string> {
             "Frame", "Time",
-            "System Memory (MB)", "GC Memory (MB)", "Main Thread Time (ms)"
+            "Main Thread Time (ms)",
+            "System Memory (MB)", "GC Memory (MB)", "GC Alloc (KB/s)"
         };
         headerColumns.AddRange(markersToRecord.Select(m => $"\"{m} (ms)\""));
 
         csvContent.AppendLine(string.Join(",", headerColumns));
 
+        // CPU Recorders
+        mainThreadTimeRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "Main Thread", 15);
+
+        // Memory Recorders
         systemMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "System Used Memory");
         gcMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Reserved Memory");
-        mainThreadTimeRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "Main Thread", 15);
+        gcAllocRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
+        
     }
 
     void Update()
@@ -101,16 +110,20 @@ public class ProfilerDataExporter : MonoBehaviour
         values[0] = Time.frameCount.ToString();
         values[1] = Time.time.ToString("F3");
 
-        values[2] = (systemMemoryRecorder.LastValue / (1024.0 * 1024.0)).ToString("F2");
-        values[3] = (gcMemoryRecorder.LastValue / (1024.0 * 1024.0)).ToString("F2");
-        values[4] = (mainThreadTimeRecorder.LastValue / 1000000.0).ToString("F2");
+        // CPU Stats
+        values[2] = (mainThreadTimeRecorder.LastValue / 1000000.0).ToString("F2");
 
+        // Memory Stats
+        values[3] = (systemMemoryRecorder.LastValue / (1024.0 * 1024.0)).ToString("F2");
+        values[4] = (gcMemoryRecorder.LastValue / (1024.0 * 1024.0)).ToString("F2");
+        values[5] = (gcAllocRecorder.LastValue / 1024.0).ToString("F2");
+        
         csvContent.AppendLine(string.Join(",", values));
     }
 
     public void WriteReportToFile()
     {
-        string filePath = Path.Combine(Application.persistentDataPath, $"cpu_execution_report_{System.DateTime.Now:yyyyMMdd_HHmmss}.csv");
+        string filePath = Path.Combine(Application.persistentDataPath, $"profiler_report_{System.DateTime.Now:yyyyMMdd_HHmmss}.csv");
         File.WriteAllText(filePath, csvContent.ToString());
         Debug.Log($"[ProfilerDataExporter] Report saved to: {filePath}");
     }
@@ -119,8 +132,12 @@ public class ProfilerDataExporter : MonoBehaviour
     {
         WriteReportToFile();
 
+        // CPU Recorder Disposal
+        mainThreadTimeRecorder.Dispose();
+
+        // Memory Recorder Disposal
         systemMemoryRecorder.Dispose();
         gcMemoryRecorder.Dispose();
-        mainThreadTimeRecorder.Dispose();
+        gcAllocRecorder.Dispose();
     }
 }
