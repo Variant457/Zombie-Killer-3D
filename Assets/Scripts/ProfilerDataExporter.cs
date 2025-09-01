@@ -7,7 +7,11 @@ using Unity.Profiling;
 
 public class ProfilerDataExporter : MonoBehaviour
 {
-    private StringBuilder csvContent;
+    // File Writing
+    private StreamWriter reportWriter;
+    private FileStream fileStream;
+    private readonly object fileLock = new object();
+
     private List<string> headerColumns;
 
     //CPU Specific
@@ -17,7 +21,6 @@ public class ProfilerDataExporter : MonoBehaviour
     private ProfilerRecorder systemMemoryRecorder;
     private ProfilerRecorder gcMemoryRecorder;
     private ProfilerRecorder gcAllocRecorder;
-
     private float statsRecordInterval = 1.0f;
     private float timeSinceLastRecord = 0f;
 
@@ -52,7 +55,20 @@ public class ProfilerDataExporter : MonoBehaviour
 
     void OnEnable()
     {
-        csvContent = new StringBuilder();
+        string filePath = Path.Combine(Application.persistentDataPath, $"profiler_report_{System.DateTime.Now:yyyyMMdd_HHmmss}.csv");
+        Debug.Log($"[ProfilerExporter] Report will be saved to: {filePath}");
+
+        try
+        {
+            fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+            reportWriter = new StreamWriter(fileStream);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[ProfilerExporter] Failed to open file for writing: {ex.Message}");
+            return;
+        }
+
         headerColumns = new List<string> {
             "Frame", "Time",
             "Main Thread Time (ms)",
@@ -60,7 +76,8 @@ public class ProfilerDataExporter : MonoBehaviour
         };
         headerColumns.AddRange(markersToRecord.Select(m => $"\"{m} (ms)\""));
 
-        csvContent.AppendLine(string.Join(",", headerColumns));
+        reportWriter.WriteLine(string.Join(",", headerColumns));
+        reportWriter.Flush();
 
         // CPU Recorders
         mainThreadTimeRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "Main Thread", 15);
@@ -69,7 +86,6 @@ public class ProfilerDataExporter : MonoBehaviour
         systemMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "System Used Memory");
         gcMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Reserved Memory");
         gcAllocRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
-        
     }
 
     void Update()
@@ -99,7 +115,7 @@ public class ProfilerDataExporter : MonoBehaviour
             values[markerIndex] = ms.ToString("F6");
         }
 
-        csvContent.AppendLine(string.Join(",", values));
+        lock (fileLock) { reportWriter.WriteLine(string.Join(",", values)); }
     }
 
     private void RecordGeneralStats()
@@ -118,19 +134,14 @@ public class ProfilerDataExporter : MonoBehaviour
         values[4] = (gcMemoryRecorder.LastValue / (1024.0 * 1024.0)).ToString("F2");
         values[5] = (gcAllocRecorder.LastValue / 1024.0).ToString("F2");
         
-        csvContent.AppendLine(string.Join(",", values));
-    }
-
-    public void WriteReportToFile()
-    {
-        string filePath = Path.Combine(Application.persistentDataPath, $"profiler_report_{System.DateTime.Now:yyyyMMdd_HHmmss}.csv");
-        File.WriteAllText(filePath, csvContent.ToString());
-        Debug.Log($"[ProfilerDataExporter] Report saved to: {filePath}");
+        lock (fileLock) { reportWriter.WriteLine(string.Join(",", values)); }
     }
 
     void OnDisable()
     {
-        WriteReportToFile();
+        Debug.Log("[ProfilerExporter] Closing Report File");
+        lock (fileLock) { reportWriter?.Close(); }
+        fileStream?.Close();
 
         // CPU Recorder Disposal
         mainThreadTimeRecorder.Dispose();
