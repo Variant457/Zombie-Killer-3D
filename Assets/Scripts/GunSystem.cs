@@ -94,8 +94,9 @@ public class GunSystem : MonoBehaviour
         }
 
         //Graphics
-        Instantiate(muzzleFlash, muzzlePoint.position, Quaternion.identity);
-
+        GameObject flash = Instantiate(muzzleFlash, muzzlePoint.position, Quaternion.identity);
+        Destroy(flash, 0.1f);
+        
         audioSource.clip = Audioclip;
         audioSource.Play();
 
