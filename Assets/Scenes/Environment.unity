@@ -837,6 +837,7 @@ MonoBehaviour:
   audioSource: {fileID: 298021550}
   muzzleFlash: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4, type: 3}
   text: {fileID: 643839476}
+  profilerExporter: {fileID: 1993084030}
 --- !u!1 &352866236 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5126527961139664765, guid: 035bf1ba97d19214580cfe6f5a29fdc3, type: 3}
@@ -1016,6 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
   healthBar: {fileID: 521392622}
+  profilerExporter: {fileID: 1993084030}
 --- !u!1 &643839474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,6 +1843,7 @@ MonoBehaviour:
   maxSpawnRad: 80
   minSpawnRad: 40
   initSpawnInterval: 3
+  profilerExporter: {fileID: 1993084030}
 --- !u!4 &1568709118
 Transform:
   m_ObjectHideFlags: 0
@@ -1979,6 +1982,7 @@ MonoBehaviour:
   dmgAmt: 2
   healthBar: {fileID: 521392625}
   gameManager: {fileID: 1967809108}
+  profilerExporter: {fileID: 1993084030}
 --- !u!114 &1621718248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1992,6 +1996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
   healthBar: {fileID: 521392622}
+  profilerExporter: {fileID: 1993084030}
 --- !u!4 &1621718249 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 937451010987979973, guid: 035bf1ba97d19214580cfe6f5a29fdc3, type: 3}
@@ -2537,6 +2542,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1621718249}
   pointText: {fileID: 1906992547}
   scoreText: {fileID: 1146996130}
+  profilerExporter: {fileID: 1993084030}
 --- !u!4 &1967809109
 Transform:
   m_ObjectHideFlags: 0
@@ -2547,6 +2553,77 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 721.6, y: 88.89999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1993084029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1993084031}
+  - component: {fileID: 1993084030}
+  m_Layer: 0
+  m_Name: ProfilerDataExporter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1993084030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993084029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ac63f37a4650f4385565c375aeb127, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProfilerDataExporter
+  markersToRecord:
+  - GameManager.Start
+  - GameManager.GameOver
+  - GameManager.OnClick
+  - GameManager.AddPoints
+  - GunSystem.Awake
+  - GunSystem.Update
+  - GunSystem.MyInput
+  - GunSystem.Shoot
+  - GunSystem.ResetShot
+  - GunSystem.Reload
+  - GunSystem.ReloadFinished
+  - HealthBarUI.Start
+  - HealthBarUI.UpdateHealthBar
+  - PlayerManager.Start
+  - PlayerManager.OnCollisionEnter
+  - PlayerManager.ResetHealth
+  - PlyerManager.Update
+  - ZombieHealthUI.Start
+  - ZombieHealthUI.LateUpdate
+  - ZombieHealthUI.UpdateHealthUI
+  - ZombieManager.Start
+  - ZombieManager.Update
+  - ZombieManager.TakeDmg
+  - ZombieSpawner.Start
+  - ZombieSpawner.Update
+  - ZombieSpawner.SpawnZombieRoutine
+--- !u!4 &1993084031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993084029}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 324.30228, y: 64.93559, z: 229.62537}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2695,3 +2772,4 @@ SceneRoots:
   - {fileID: 1568709118}
   - {fileID: 1632061771}
   - {fileID: 1998620046}
+  - {fileID: 1993084031}

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -11,14 +12,20 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     private GameManager gameManager;
 
+    //Profiling
+    [SerializeField] private ProfilerDataExporter profilerExporter;
+
     void Start()
     {
+        var stopwatch = Stopwatch.StartNew();
         gameManager.failScreen.enabled = false;
-        Debug.Log("Game Started");
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("PlayerManager.Start", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        var stopwatch = Stopwatch.StartNew();
         if (collision.gameObject.CompareTag("Enemy") && health > 0)
         {
             health -= dmgAmt;
@@ -28,21 +35,29 @@ public class PlayerManager : MonoBehaviour
                 gameManager.GameOver();
             }
         }
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("PlayerManager.OnCollisionEnter", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     public void ResetHealth()
     {
+        var stopwatch = Stopwatch.StartNew();
         health = maxHealth;
         healthBar.UpdateHealthBar(health, maxHealth);
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("PlayerManager.ResetHealth", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     // Update is called once per frame
     void Update()
     {
+        var stopwatch = Stopwatch.StartNew();
         if (health > 0 && health < maxHealth)
         {
             health += 0.005f;
             healthBar.UpdateHealthBar(health, maxHealth);
         }
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("PlayerManager.Update", stopwatch.Elapsed.TotalMilliseconds);
     }
 }

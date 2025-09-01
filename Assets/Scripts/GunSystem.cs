@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using TMPro;
+using System.Diagnostics;
 
 
 public class GunSystem : MonoBehaviour
@@ -29,6 +30,9 @@ public class GunSystem : MonoBehaviour
     public GameObject muzzleFlash;
     public TextMeshProUGUI text;
 
+    // Profiling
+    [SerializeField] private ProfilerDataExporter profilerExporter;
+
     private void Awake()
     {
         bulletsLeft = magazineSize;
@@ -36,14 +40,17 @@ public class GunSystem : MonoBehaviour
     }
     private void Update()
     {
+        var stopwatch = Stopwatch.StartNew();
         MyInput();
-
 
         //SetText
         text.SetText(bulletsLeft + " / " + magazineSize);
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.Update", stopwatch.Elapsed.TotalMilliseconds);
     }
     private void MyInput()
     {
+        var stopwatch = Stopwatch.StartNew();
         if (allowButtonHold) shooting = Input.GetMouseButton(0);
         else shooting = Input.GetMouseButton(0);
 
@@ -57,9 +64,12 @@ public class GunSystem : MonoBehaviour
             bulletsShot = bulletsPerTap;
             Shoot();
         }
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.MyInput", stopwatch.Elapsed.TotalMilliseconds);
     }
     private void Shoot()
     {
+        var stopwatch = Stopwatch.StartNew();
         readyToShoot = false;
 
 
@@ -98,19 +108,31 @@ public class GunSystem : MonoBehaviour
 
         if (bulletsShot > 0 && bulletsLeft > 0)
             Invoke("Shoot", timeBetweenShots);
+
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.Shoot", stopwatch.Elapsed.TotalMilliseconds);
     }
     private void ResetShot()
     {
+        var stopwatch = Stopwatch.StartNew();
         readyToShoot = true;
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.ResetShot", stopwatch.Elapsed.TotalMilliseconds);
     }
     private void Reload()
     {
+        var stopwatch = Stopwatch.StartNew();
         reloading = true;
         Invoke("ReloadFinished", reloadTime);
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.Reload", stopwatch.Elapsed.TotalMilliseconds);
     }
     private void ReloadFinished()
     {
+        var stopwatch = Stopwatch.StartNew();
         bulletsLeft = magazineSize;
         reloading = false;
+        stopwatch.Stop();
+        profilerExporter?.RecordEvent("GunSystem.ReloadFinished", stopwatch.Elapsed.TotalMilliseconds);
     }
 }
