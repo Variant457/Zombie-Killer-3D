@@ -17,10 +17,7 @@ public class PlayerManager : MonoBehaviour
 
     void Start()
     {
-        var stopwatch = Stopwatch.StartNew();
         gameManager.failScreen.enabled = false;
-        stopwatch.Stop();
-        profilerExporter?.RecordEvent("PlayerManager.Start", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     void OnCollisionEnter(Collision collision)

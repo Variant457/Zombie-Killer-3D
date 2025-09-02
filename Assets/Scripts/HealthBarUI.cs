@@ -13,10 +13,7 @@ public class HealthBarUI : MonoBehaviour
 
     void Start()
     {
-        var stopwatch = Stopwatch.StartNew();
         width = healthBar.sizeDelta.x;
-        stopwatch.Stop();
-        profilerExporter?.RecordEvent("HealthBarUI.Start", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     public void UpdateHealthBar(float currentHP, float maxHP)

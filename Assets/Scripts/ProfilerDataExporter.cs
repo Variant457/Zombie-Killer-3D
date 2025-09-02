@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Linq;
 using Unity.Profiling;
 
 public class ProfilerDataExporter : MonoBehaviour
 {
+    private bool isQuitting = false;
+
     // File Writing
     private StreamWriter reportWriter;
     private FileStream fileStream;
@@ -26,7 +27,6 @@ public class ProfilerDataExporter : MonoBehaviour
 
     public string[] markersToRecord = new string[]
     {
-        "GameManager.Start",
         "GameManager.GameOver",
         "GameManager.OnClick",
         "GameManager.AddPoints",
@@ -36,20 +36,19 @@ public class ProfilerDataExporter : MonoBehaviour
         "GunSystem.ResetShot",
         "GunSystem.Reload",
         "GunSystem.ReloadFinished",
-        "HealthBarUI.Start",
         "HealthBarUI.UpdateHealthBar",
-        "PlayerManager.Start",
+        "HealthUIManager.LateUpdate",
+        "ObjectPool.GetPooledObject",
+        "ObjectPool.Start",
         "PlayerManager.OnCollisionEnter",
         "PlayerManager.ResetHealth",
         "PlyerManager.Update",
-        "ZombieHealthUI.Start",
-        "ZombieHealthUI.LateUpdate",
+        "Zombie.Die",
+        "ZombieController.RegisterZombie",
+        "ZombieController.UnregisterZombie",
+        "ZombieController.Update",
         "ZombieHealthUI.UpdateHealthUI",
-        "ZombieManager.Start",
-        "ZombieManager.Update",
         "ZombieManager.TakeDmg",
-        "ZombieSpawner.Start",
-        "ZombieSpawner.Update",
         "ZombieSpawner.SpawnZombieRoutine"
     };
 
@@ -100,6 +99,8 @@ public class ProfilerDataExporter : MonoBehaviour
 
     public void RecordEvent(string markerName, double ms)
     {
+        if (isQuitting) return;
+
         var values = new string[headerColumns.Count];
         values[0] = Time.frameCount.ToString();
         values[1] = Time.time.ToString("F3");
@@ -120,6 +121,8 @@ public class ProfilerDataExporter : MonoBehaviour
 
     private void RecordGeneralStats()
     {
+        if (isQuitting) return;
+
         var values = new string[headerColumns.Count];
         for (int i = 0; i < values.Length; i++) { values[i] = "0"; }
 
@@ -135,6 +138,11 @@ public class ProfilerDataExporter : MonoBehaviour
         values[5] = (gcAllocRecorder.LastValue / 1024.0).ToString("F2");
         
         lock (fileLock) { reportWriter.WriteLine(string.Join(",", values)); }
+    }
+
+    void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 
     void OnDisable()

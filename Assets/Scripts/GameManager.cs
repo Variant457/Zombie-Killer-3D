@@ -20,12 +20,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        var stopwatch = Stopwatch.StartNew();
         {
             points = 0;
         }
-        stopwatch.Stop();
-        profilerExporter?.RecordEvent("GameManager.Start", stopwatch.Elapsed.TotalMilliseconds);
     }
 
     // Changes the screen to the Fail Screen when the game ends
